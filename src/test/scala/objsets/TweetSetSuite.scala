@@ -17,6 +17,31 @@ class TweetSetSuite extends FunSuite {
     val set4c = set3.incl(c)
     val set4d = set3.incl(d)
     val set5 = set4c.incl(d)
+    
+    val e = new Tweet("e", "e body", 9)
+    val f = new Tweet("f", "f body", 9)
+    val g = new Tweet("g", "g body", 9)
+    val h = new Tweet("h", "h body", 9)
+    val i = new Tweet("i", "i body", 9)
+    val j = new Tweet("j", "j body", 9)
+    val k = new Tweet("k", "k body", 9)
+    val l = new Tweet("l", "l body", 9)
+    val m = new Tweet("m", "m body", 9)
+    val n = new Tweet("n", "n body", 9)
+    val o = new Tweet("o", "o body", 9)
+    val p = new Tweet("p", "p body", 9)
+    val q = new Tweet("q", "q body", 9)
+    val r = new Tweet("r", "r body", 9)
+    val s = new Tweet("s", "s body", 9)
+    val t = new Tweet("t", "t body", 9)
+    val u = new Tweet("u", "u body", 9)
+    val v = new Tweet("v", "v body", 9)
+    val w = new Tweet("w", "w body", 9)
+    val x = new Tweet("x", "x body", 9)
+    val y = new Tweet("y", "y body", 9)
+    val z = new Tweet("z", "z body", 9)
+    val set6 = set5.incl(e).incl(f).incl(g).incl(h).incl(i).incl(j).incl(k).incl(l).incl(m).incl(n).incl(o)
+    val set7 = set5.incl(p).incl(q).incl(r).incl(s).incl(t).incl(u).incl(v).incl(w).incl(x).incl(y).incl(z)
   }
 
   def asSet(tweets: TweetSet): Set[Tweet] = {
@@ -48,6 +73,18 @@ class TweetSetSuite extends FunSuite {
   test("union: set4c and set4d") {
     new TestSets {
       assert(size(set4c.union(set4d)) === 4)
+    }
+  }
+
+  test("union: set4c and set6") {
+    new TestSets {
+      assert(size(set4c.union(set6)) === 15)
+    }
+  }
+
+  test("union: set6 and set7") {
+    new TestSets {
+      assert(size(set7.union(set6)) === 26)
     }
   }
 

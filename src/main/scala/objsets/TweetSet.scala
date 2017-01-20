@@ -139,7 +139,9 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (p(elem)) acc.incl(elem).union(left.filterAcc(p, acc)).union(right.filterAcc(p,acc))
     else new Empty().union(left.filterAcc(p, acc)).union(right.filterAcc(p,acc))
 
-  def union(that: TweetSet): TweetSet = that.union(left).union(right).incl(elem)
+  def union(that: TweetSet): TweetSet =
+    if (that.isEmpty) this
+    else that.union(left).union(right).incl(elem)
   
   def mostRetweeted: Tweet = {
       val one = elem
@@ -226,18 +228,20 @@ object GoogleVsApple {
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-   lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
+  lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
 
-    def getRelevantTweets(list: List[String]): TweetSet = {
-      TweetReader.allTweets.filter(p => containsWord(p.text, list))
-    }
-  
-    def containsWord(text: String, list: List[String]): Boolean = {
-      if (list.isEmpty) false
-      else if (text.contains(list.head)) true
-      else containsWord(text, list.tail)
-    }
+  lazy val preFilledAllTweets = TweetReader.allTweets
+
+  def getRelevantTweets(list: List[String]): TweetSet = {
+    preFilledAllTweets.filter(p => containsWord(p.text, list))
   }
+  
+  def containsWord(text: String, list: List[String]): Boolean = {
+    if (list.isEmpty) false
+    else if (text.contains(list.head)) true
+    else containsWord(text, list.tail)
+  }
+}
 
 object Main extends App {
   // Print the trending tweets

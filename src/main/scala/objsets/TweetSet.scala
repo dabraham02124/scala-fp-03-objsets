@@ -68,6 +68,8 @@ abstract class TweetSet {
     def mostRetweeted: Tweet
       
     def isEmpty: Boolean
+    
+    def size: Int
   
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -131,6 +133,8 @@ class Empty extends TweetSet {
   def remove(tweet: Tweet): TweetSet = this
 
   def foreach(f: Tweet => Unit): Unit = ()
+  
+  def size = 0
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
@@ -139,9 +143,16 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (p(elem)) acc.incl(elem).union(left.filterAcc(p, acc)).union(right.filterAcc(p,acc))
     else new Empty().union(left.filterAcc(p, acc)).union(right.filterAcc(p,acc))
 
-  def union(that: TweetSet): TweetSet =
+  def union(that: TweetSet): TweetSet = {
     if (that.isEmpty) this
-    else that.union(left).union(right).incl(elem)
+    else if (left.isEmpty && right.isEmpty) that.incl(elem)
+    else if (left.isEmpty) right.union(that).incl(elem)
+    else if (right.isEmpty) left.union(that).incl(elem)
+    else if (that.size < this.size) that.union(this)
+    else {
+      right.union(left).union(that).incl(elem)
+    }
+  }
   
   def mostRetweeted: Tweet = {
       val one = elem
@@ -166,6 +177,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
         new Cons(max, remove(max).descendingByRetweet)
       } else Nil
     }
+    
+  def size = 1 + left.size + right.size
 
   /**
    * The following methods are already implemented

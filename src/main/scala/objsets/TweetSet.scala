@@ -154,18 +154,12 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     }
   }
   
-  def mostRetweeted: Tweet = {
-      val one = elem
-      
-      val two =
-        if (! left.isEmpty) max(left.mostRetweeted, elem)
-        else elem
-        
-      val three = 
-        if (! right.isEmpty) max(right.mostRetweeted, elem)
-        else elem
-      three
-    }
+  def mostRetweeted: Tweet =
+      max(mostRetweetedSub(left, elem), mostRetweetedSub(right, elem))
+  
+    def mostRetweetedSub(side: TweetSet, elem: Tweet): Tweet =
+      if (!side.isEmpty) max(side.mostRetweeted, elem)
+      else elem
 
     def max(a: Tweet, b: Tweet) = if (a.retweets > b.retweets) a else b
   

@@ -139,7 +139,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (p(elem)) acc.incl(elem).union(left.filterAcc(p, acc)).union(right.filterAcc(p,acc))
     else new Empty().union(left.filterAcc(p, acc)).union(right.filterAcc(p,acc))
 
-  def union(that: TweetSet): TweetSet = that
+  def union(that: TweetSet): TweetSet = that.union(left).union(right).incl(elem)
   
   def mostRetweeted: Tweet = {
       val one = elem

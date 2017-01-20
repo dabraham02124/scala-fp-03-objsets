@@ -42,6 +42,31 @@ class TweetSetSuite extends FunSuite {
     val z = new Tweet("z", "z body", 9)
     val set6 = set5.incl(e).incl(f).incl(g).incl(h).incl(i).incl(j).incl(k).incl(l).incl(m).incl(n).incl(o)
     val set7 = set5.incl(p).incl(q).incl(r).incl(s).incl(t).incl(u).incl(v).incl(w).incl(x).incl(y).incl(z)
+    
+    
+    val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus") // 40
+    val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad") //185
+
+    lazy val googleTweets: TweetSet = getRelevantTweets(google)
+    lazy val appleTweets: TweetSet = getRelevantTweets(apple)
+  
+    /**
+     * A list of all tweets mentioning a keyword from either apple or google,
+     * sorted by the number of retweets.
+     */
+    lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
+
+    lazy val preFilledAllTweets = TweetReader.allTweets
+
+    def getRelevantTweets(list: List[String]): TweetSet = {
+            preFilledAllTweets.filter(p => containsWord(p.text, list))
+    }
+
+    def containsWord(text: String, list: List[String]): Boolean = {
+            if (list.isEmpty) false
+            else if (text.contains(list.head)) true
+            else containsWord(text, list.tail)
+    }
   }
 
   def asSet(tweets: TweetSet): Set[Tweet] = {
@@ -67,6 +92,24 @@ class TweetSetSuite extends FunSuite {
   test("filter: 20 on set5") {
     new TestSets {
       assert(size(set5.filter(tw => tw.retweets == 20)) === 2)
+    }
+  }
+
+  test("filter: 150 apple tweets") {
+    new TestSets {
+      assert(size(appleTweets) === 150)
+    }
+  }
+
+  test("filter: 38 google tweets") {
+    new TestSets {
+      assert(size(googleTweets) === 38)
+    }
+  }
+
+  test("filter: 9 on alphabet") {
+    new TestSets {
+      assert(size(set6.union(set7).filter(tw => tw.retweets == 9)) === 23)
     }
   }
 
